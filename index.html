@@ -1,0 +1,141 @@
+<!--
+  Copyright (c) 2025 DevinDaboiCorporation Games
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DevinDaboiCorp</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-family: Arial, sans-serif;
+
+      background-image: url('background.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+
+    footer {
+      color: lightgrey
+    }
+
+    h3, h2, h1, p {
+      text-align: center;
+    }
+
+    button {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+
+    .game-buttons {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 10px;
+    }
+
+    .game-buttons button {
+      width: 150px;
+      height: 150px;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .game-buttons button img {
+      width: 96px;
+      height: 96px;
+      margin-bottom: 10px;
+    }
+    .rounded-image {
+      border-radius: 10px;
+    }
+  </style>
+</head>
+  <div class="game-section">
+    <p style="background-image: url('background.jpg');"></p>
+    <br><br>
+    <h1>[PUT YOUR NAME HERE]'s Games</h1> <!-- Put Your Name Here -->
+    <h3>Replace this with a short description of the site or about you.</h3>
+    <p>Some of the games may take a while to load.</p>
+    <br><br><br>
+    <div class="game-buttons">
+      <button onclick="openGame('2048/2048.html')"> <img src="img/1.webp" class="rounded-image">Play 2048!</button>
+      <button onclick="openGame('baloonstd/baloonstd.html')"> <img src="img/2.webp" class="rounded-image">Play Baloons TD!</button>
+      <button onclick="openGame('bitlife/bitlife.html')"> <img src="img/3.webp" class="rounded-image">Play Bitlife!</button>
+      <button onclick="openGame('blockblast/blockblast.html')"> <img src="img/4.webp" class="rounded-image">Play Block Blast!</button>
+      <button onclick="openGame('ClusterRush/clusterrush.html')"> <img src="img/5.webp" class="rounded-image">Play Cluster Rush!</button>
+      <button onclick="openGame('CookieClicker/cookieclicker.html')"> <img src="img/6.webp" class="rounded-image">Play Cookie Clicker!</button>
+      <button onclick="openGame('Coreball/coreball.html')"> <img src="img/7.webp" class="rounded-image">Play Coreball!</button>
+      <button onclick="openGame('DriveMad/drivemad.html')"> <img src="img/8.webp" class="rounded-image">Play Drive Mad!</button>
+      <button onclick="openGame('fnf/fnf.html')"> <img src="img/9.webp" class="rounded-image">Play Friday Night Funkin!</button>
+      <button onclick="openGame('Hextris/hextris.html')"> <img src="img/10.webp" class="rounded-image">Play Hextris!</button>
+      <button onclick="openGame('Mario/Mario.html')"> <img src="img/11.webp" class="rounded-image">Play Mario!</button>
+      <button onclick="openGame('paperio2/paper.html')"> <img src="img/12.webp" class="rounded-image">Play Paper.io 2!</button>
+      <button onclick="openGame('polytrack.3-main/polytrack.html')"> <img src="img/13.webp" class="rounded-image">Play PolyTrack!</button>
+      <button onclick="openGame('Pong/pong.html')"> <img src="img/14.webp" class="rounded-image">Play Pong!</button>
+      <button onclick="openGame('pvz/pvz.html')"> <img src="img/15.webp" class="rounded-image">Play PVZ!</button>
+      <button onclick="openGame('Retrobowl/retro.html')"> <img src="img/17.webp" class="rounded-image">Play Retrobowl!</button>
+      <button onclick="openGame('sandboxgame/sandbox.html')"> <img src="img/18.webp" class="rounded-image">Play Sandbox Game!</button>
+      <button onclick="openGame('slope/slope.html')"> <img src="img/19.webp" class="rounded-image">Play Slope!</button>
+      <button onclick="openGame('Snowrider/snowrider.html')"> <img src="img/20.webp" class="rounded-image">Play Snow Rider 3D!</button>
+      <button onclick="openGame('SubwaySurfers/subwaysurfers.html')"> <img src="img/21.webp" class="rounded-image">Play Subway Surfers!</button>
+      <button onclick="openGame('Tetris/tetrisgame.html')"> <img src="img/22.webp" class="rounded-image">Play Tetris!</button>
+      <button onclick="openGame('TimeShooter/timeshooter.html')"> <img src="img/23.webp" class="rounded-image">Play Time Shooter!</button>
+      <button onclick="openGame('Tombofthemask/tomb.html')"> <img src="img/24.webp" class="rounded-image">Play Tomb Of The Mask!</button>
+      <button onclick="openGame('WorldsHardestGame/whg.html')"> <img src="img/25.webp" class="rounded-image">Play Worlds Hardest Game!</button>
+      <button onclick="openGame('windowkill/windowkill.html')"> <img src="img/26.webp" class="rounded-image">Play Windowkill!</button>
+      <button onclick="openGame('yohoho/yohoho.html')"> <img src="img/27.webp" class="rounded-image">Play Yohoho.io!</button>
+    </div>
+  </div>
+  <script>
+    document.body.style.zoom="70%"
+    function openGame(url){
+        var win = window.open()
+        if (url) {
+            var iframe = document.createElement("iframe")
+            iframe.style.border = "none";
+            iframe.style.width = "100%";
+            iframe.style.height = "100%"
+            iframe.style.margin = "0";
+            iframe.src = url;
+            win.document.body.appendChild(iframe);
+        }
+    }  
+  </script>
+  <br><br><br><br>
+    <footer>
+    &copy; 2025 DevinDaboiCorporation Games. All rights reserved.
+  </footer>
+</body>
+</html>
