@@ -1,21 +1,25 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Redirecting...</title>
+  <meta charset="utf-8" />
+  <title>Embedded Missile Game</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #000;
+    }
+    iframe {
+      border: none;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
 </head>
 <body>
-<script>
-  // Replace this with your target site
-  const target = "https://thisisforworktrust.github.io/missile-game/";
-
-  // Navigate this same window to the target site
-  window.location.href = target;
-
-  // Optionally try to close itself after navigation (some browsers ignore this)
-  window.onload = () => {
-    window.close();
-  };
-</script>
+  <iframe src="https://thisisforworktrust.github.io/missile-game/"></iframe>
 </body>
 </html>
