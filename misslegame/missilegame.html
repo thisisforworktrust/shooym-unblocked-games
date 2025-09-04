@@ -1,19 +1,21 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <title>Redirect & Close</title>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
 </head>
 <body>
 <script>
-  // Replace with your target site
+  // Replace this with your target site
   const target = "https://thisisforworktrust.github.io/missile-game/";
 
-  // Open the target site in a new tab/window
-  window.open(target, "_blank");
+  // Navigate this same window to the target site
+  window.location.href = target;
 
-  // Close this about:blank window
-  window.close();
+  // Optionally try to close itself after navigation (some browsers ignore this)
+  window.onload = () => {
+    window.close();
+  };
 </script>
 </body>
 </html>
