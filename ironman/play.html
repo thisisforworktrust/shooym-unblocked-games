@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Player</title>
+  <style>
+    .video-container {
+      position: relative;
+      width: 100%;
+      max-width: 960px;   /* optional max width */
+      aspect-ratio: 16 / 9;
+      background: black;
+    }
+    .video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* keeps it filled properly */
+    }
+  </style>
+</head>
+<body>
+  <div class="video-container">
+    <video src="movie.mp4" controls></video>
+  </div>
+</body>
+</html>
