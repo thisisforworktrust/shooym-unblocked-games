@@ -85,6 +85,37 @@
       color: #4CAF50;
     }
 
+    .vip-section {
+      margin: 60px auto;
+      text-align: center;
+      width: 90%;
+      max-width: 1400px;
+    }
+
+    .vip-input {
+      padding: 10px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      margin-right: 10px;
+    }
+
+    .vip-button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #4CAF50;
+      color: white;
+      font-weight: bold;
+    }
+
+    .vip-games {
+      display: none; /* Hidden until correct password */
+      margin-top: 30px;
+    }
+
     footer {
       margin: 40px 0 20px 0;
       font-size: 0.9rem;
@@ -98,6 +129,7 @@
   <h3>First Unblocked Website FR</h3>
   <p>Some of the games may take a while to load.</p>
 
+  <!-- All 33 Public Games -->
   <div class="game-buttons">
     <div class="game-card" onclick="openGame('addagame/play.html')"><img src="img/34.webp"><span>Suggest A Game!</span></div>
     <div class="game-card" onclick="openGame('2048/2048.html')"><img src="img/1.webp"><span>Play 2048!</span></div>
@@ -132,7 +164,21 @@
     <div class="game-card" onclick="openGame('justoneboss/play.html')"><img src="img/31.webp"><span>Play Just One Boss!</span></div>
     <div class="game-card" onclick="openGame('Pokemon-unbound/play.html')"><img src="img/32.webp"><span>Play PokeMon Unbound!</span></div>
     <div class="game-card" onclick="openGame('ironman/play.html')"><img src="img/33.webp"><span>Watch Ironman!</span></div>
+  </div>
+
+  <!-- VIP Section -->
+  <div class="vip-section">
+    <h2>VIP Section 🔒</h2>
+    <p>Enter the password to unlock exclusive VIP games.</p>
+    <input type="password" id="vipPassword" class="vip-input" placeholder="Enter password" />
+    <button class="vip-button" onclick="unlockVIP()">Unlock</button>
+
+    <div class="game-buttons vip-games" id="vipGames">
+      <!-- VIP ONLY GAMES GO HERE -->
+      <div class="game-card" onclick="openGame('secret/secretgame.html')"><img src="img/vip1.webp"><span>Secret Game 1</span></div>
+      <div class="game-card" onclick="openGame('exclusive/exclusive.html')"><img src="img/vip2.webp"><span>Exclusive Game</span></div>
     </div>
+  </div>
 
   <footer>
     &copy; 2025 Shooym Games
@@ -150,6 +196,16 @@
         win.document.body.style.margin = "0";
         win.document.body.style.height = "100vh";
         win.document.body.appendChild(iframe);
+      }
+    }
+
+    function unlockVIP(){
+      const input = document.getElementById("vipPassword").value;
+      if(input === "thisisforworktrust"){
+        document.getElementById("vipGames").style.display = "grid";
+        alert("✅ VIP Access Granted!");
+      } else {
+        alert("❌ Incorrect Password!");
       }
     }
   </script>
