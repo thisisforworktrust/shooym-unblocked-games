@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: #000;
+    }
+    video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      object-fit: cover;
+      transform: scaleX(-1); /* Mirror video for user */
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+    }
+    #uploadBox {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+      background: rgba(0,0,0,0.5);
+      padding: 5px;
+      border-radius: 8px;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/face_detection.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+</head>
+<body>
+  <div id="uploadBox">
+    <input type="file" id="imageUpload" accept="image/*">
+  </div>
+  
+  <video id="video" autoplay playsinline muted></video>
+  <canvas id="canvas"></canvas>
+  <img id="faceOverlay" style="display:none;" />
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const overlayImg = document.getElementById('faceOverlay');
+    const uploadInput = document.getElementById('imageUpload');
+
+    // When user uploads a new image
+    uploadInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          overlayImg.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function resizeCanvas() {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+    }
+
+    const faceDetection = new FaceDetection({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection/${file}`,
+    });
+
+    faceDetection.setOptions({
+      model: 'short',
+      minDetectionConfidence: 0.5,
+    });
+
+    faceDetection.onResults((results) => {
+      if (!canvas.width || !canvas.height) return;
+
+      ctx.save();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Mirror the canvas drawing to match video mirror
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+
+      // Draw the video frame mirrored
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      if (results.detections && overlayImg.src) {
+        for (const detection of results.detections) {
+          const box = detection.boundingBox;
+          const x = box.xCenter * canvas.width;
+          const y = box.yCenter * canvas.height;
+          const width = box.width * canvas.width;
+          const height = box.height * canvas.height;
+
+          ctx.drawImage(overlayImg, x - width / 2, y - height / 2, width, height);
+        }
+      }
+
+      ctx.restore();
+    });
+
+    navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+      video.srcObject = stream;
+      video.onloadedmetadata = () => {
+        video.play();
+        resizeCanvas();
+        new Camera(video, {
+          onFrame: async () => {
+            await faceDetection.send({ image: video });
+          },
+          width: 1280,
+          height: 720,
+        }).start();
+      };
+    }).catch((err) => {
+      alert('Camera error: ' + err.message);
+    });
+
+    window.addEventListener('resize', resizeCanvas);
+  </script>
+</body>
+</html>
