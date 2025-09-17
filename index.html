@@ -126,7 +126,7 @@
 </head>
 <body>
   <!-- Background Music -->
-  <audio id="bgMusic" src="music/bg.mp3" autoplay loop></audio>
+<audio id="bgMusic" src="music/bg.mp3" autoplay loop muted></audio>
 
   <h1>Shooym's Games</h1>
   <h3>First Unblocked Website FR</h3>
@@ -223,12 +223,15 @@
     }
 
     // Resume music on first click (fixes autoplay block)
-    document.addEventListener("click", () => {
-      const bgMusic = document.getElementById("bgMusic");
-      if (bgMusic.paused) {
-        bgMusic.play().catch(() => {});
-      }
-    });
+    // Unmute + play music on first click
+document.addEventListener("click", () => {
+  const bgMusic = document.getElementById("bgMusic");
+  if (bgMusic.muted) {
+    bgMusic.muted = false;
+    bgMusic.play().catch(() => {});
+  }
+}, { once: true }); // runs only once
+
   </script>
 </body>
 </html>
