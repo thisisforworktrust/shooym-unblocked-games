@@ -3,71 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download HTML</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        pre {
-            background-color: #f0f0f0;
-            padding: 10px;
-            overflow-x: auto;
-        }
-    </style>
-</head>
-<body>
-    <h2>Hello people of my website!</h2>
-    <p>
-        For some reason Clash hates me and won't load unless you download this HTML. 
-        It is <strong>not a virus</strong>. Download it, open it, and if you want to look 
-        at the code before you download it, here it is:
-    </p>
-    <pre>
-&lt;!DOCTYPE html&gt;
-&lt;html lang="en"&gt;
-&lt;head&gt;
-    &lt;meta charset="UTF-8"&gt;
-    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-    &lt;title&gt;Fullscreen Embed&lt;/title&gt;
-    &lt;style&gt;
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-        }
-        iframe {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-    &lt;/style&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;iframe src="https://greenfoot.org/scenarios/27793?embed=true" allowfullscreen&gt;&lt;/iframe&gt;
-&lt;/body&gt;
-&lt;/html&gt;
-    </pre>
-
-    <button id="downloadBtn">Download HTML</button>
-
-    <script>
-        const htmlContent = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fullscreen Embed</title>
     <style>
         html, body {
@@ -89,18 +24,5 @@
 </head>
 <body>
     <iframe src="https://greenfoot.org/scenarios/27793?embed=true" allowfullscreen></iframe>
-</body>
-</html>`;
-
-        document.getElementById('downloadBtn').addEventListener('click', () => {
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'fullscreen_embed.html';
-            a.click();
-            URL.revokeObjectURL(url);
-        });
-    </script>
 </body>
 </html>
