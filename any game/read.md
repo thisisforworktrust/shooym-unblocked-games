@@ -1,0 +1,1 @@
+So you want to know how to play any pc game on my site without it crashing or lagging. Well, all you have to do is hit Ctrl, delete browsing history, then delete cached images and files. Do this every 400 mb when the pc game is loading
