@@ -126,19 +126,16 @@
 </head>
 <body>
   <!-- Background Music -->
-<audio id="bgMusic" src="music" autoplay loop muted></audio>
+  <audio id="bgMusic" src="music" autoplay loop muted></audio>
 
   <h1>Shooym's Games</h1>
   <h3>*ATTENTION DO THE THING TITTLED DO THIS OR I LOCK EVERYTHING OUT OR I LOCK EVREYTHINGOUT</h3>
   <p>Some of the games may take a while to load.</p>
 
-  <!-- All 33 Public Games -->
+  <!-- Public Games -->
   <div class="game-buttons">
     <div class="game-card" onclick="openGame('dothisform/play.html')"><img src="img/34.webp"><span>DO THIS OR I LOCK EVERYTHING OUT!</span></div>
     <div class="game-card" onclick="openGame('addagame/play.html')"><img src="img/34.webp"><span>Suggest A Game!</span></div>
-    <div class="game-card" onclick="openGame('secret/secretgame.html')"><img src="img/vip1.webp"><span>Secret Game 1</span></div>
-    <div class="game-card" onclick="openGame('exclusive/exclusive.html')"><img src="img/vip2.webp"><span>Exclusive Game</span></div>
-    <div class="game-card" onclick="openGame('1/play.html')"><img src="img/vip3.webp"><span>Shush</span></div>
     <div class="game-card" onclick="openGame('face/play.html')"><img src="img/41.webp"><span>Play Face Tracker!</span></div>
     <div class="game-card" onclick="openGame('n-gon/play.html')"><img src="img/43.webp"><span>Play n-gon!</span></div> 
     <div class="game-card" onclick="openGame('2048/2048.html')"><img src="img/1.webp"><span>Play 2048!</span></div>
@@ -178,7 +175,7 @@
     <div class="game-card" onclick="openGame('Shrek/play.html')"><img src="img/40.webp"><span>Play 5 Nights At Shreks Hotel!</span></div>
     <div class="game-card" onclick="openGame('test/index.html')"><img src="img/40.webp"><span>TESTING!</span></div>
     <div class="game-card" onclick="openGame('clash/play.html')"><img src="img/clash.png"><span>PLAY CLASH ROYALE!</span></div>
-    <div class="game-card" onclick="openGame('discord/play.html')"><img src="img/discord.png"><span>knock off discord will need to make an account</span></div>
+    <div class="game-card" onclick="openGame('discord/play.html')"><img src="img/discord.png"><span>Knock off Discord (will need account)</span></div>
   </div>
 
   <!-- VIP Section -->
@@ -188,84 +185,87 @@
     <input type="password" id="vipPassword" class="vip-input" placeholder="Enter password" />
     <button class="vip-button" onclick="unlockVIP()">Unlock</button>
 
+    <!-- VIP toggle for new window -->
+    <div style="margin-top: 20px;">
+      <label style="font-weight: bold;">
+        <input type="checkbox" id="newWindowToggle" />
+        Open VIP games in new window
+      </label>
+    </div>
+
     <div class="game-buttons vip-games" id="vipGames">
-      <!-- VIP ONLY GAMES GO HERE -->
-      <div class="game-card" onclick="openGame('secret/secretgame.html')"><img src="img/vip1.webp"><span>Secret Game 1</span></div>
-      <div class="game-card" onclick="openGame('hobo.html')"><img src="img/na.png"><span>Play Hobo</span></div>
-      <div class="game-card" onclick="openGame('hobo/clhobo2.html')"><img src="img/Hobo.png"><span>Play Hobo 2</span></div>
-      <div class="game-card" onclick="openGame('hobo/clhobo3.html')"><img src="img/Hobo.png"><span>Play Hobo 3</span></div>
-      <div class="game-card" onclick="openGame('hobo/clhobo4.html')"><img src="img/Hobo.png"><span>Play Hobo 4</span></div>
-      <div class="game-card" onclick="openGame('hobo/clhobo5.html')"><img src="img/Hobo.png"><span>Play Hobo 5</span></div>
-      <div class="game-card" onclick="openGame('hobo/clhobo6.html')"><img src="img/Hobo.png"><span>Play Hobo 6</span></div>
-      <div class="game-card" onclick="openGame('hobo/clhobo7.html')"><img src="img/Hobo.png"><span>Play Hobo 7</span></div>
-      <div class="game-card" onclick="openGame('hobo/clhobovszombies.html')"><img src="img/Hobo.png"><span>Play Hobo Vs Zombies</span></div>
-      <div class="game-card" onclick="openGame('buck/play.html')"><img src="img/buck.png"><span>PLAY BuckShot ROullete!</span></div>
-      <div class="game-card" onclick="openGame('pcports/Kindergarten.html')"><img src="img/kindergarden1.png"><span>Play Kindergarden</span></div>
-      <div class="game-card" onclick="openGame('pcports/Kindergarten 2.html')"><img src="img/kindergarden2.png"><span>Play Kindergarden 2</span></div>
-      <div class="game-card" onclick="openGame('pcports/Kindergarten 3.html')"><img src="img/kindergarden3.png"><span>Play Kindergarden 3</span></div>
-      <div class="game-card" onclick="openGame('Pokemon-unbound/play.html')"><img src="img/32.webp"><span>Play PokeMon Unbound!</span></div>
-      <div class="game-card" onclick="openGame('pcports/Hotline Miami.html')"><img src="img/hotline.png"><span>Play HotLine Miami</span></div>
-      <div class="game-card" onclick="openGame('pcports/Cuphead.html')"><img src="img/cuphead.png"><span>Play Cuphead</span></div>
-      <div class="game-card" onclick="openGame('pcports/R.E.P.O.html')"><img src="img/repo.png"><span>Play REPO</span></div>
-      <div class="game-card" onclick="openGame('pcports/RE_RUN.html')"><img src="img/rerun.png"><span>Play RE run</span></div>
-      <div class="game-card" onclick="openGame('pcports/ULTRAKILL.html')"><img src="img/ultrakill.png"><span>Play Ultrakill</span></div>
-      <div class="game-card" onclick="openGame('pcports/Getting Over It with Bennett Foddy.html')"><img src="img/get.png"><span>Play Getting Over It</span></div>
-      <div class="game-card" onclick="openGame('pcports/Jelly Drift.html')"><img src="img/jelly.png"><span>Play Jelly Drift</span></div>
-      <div class="game-card" onclick="openGame('pcports/Nazi Zombies_ Portable.html')"><img src="img/nazi.png"><span>Play Nazi Zombies</span></div>
-      <div class="game-card" onclick="openGame('any game/read.html')"><img src="img/point.png"><span>how to play any pc game without lag!</span></div>
-      <div class="game-card" onclick="openGame('crash/play.html')"><img src="img/hollow.png"><span>Hollow Knight!</span></div>
-      <div class="game-card" onclick="openGame('infcraft/play.html')"><img src="img/44.webp"><span>Play Infinite Craft!</span></div>
-      <div class="game-card" onclick="openGame('rylan/issac.html')"><img src="img/issac.png"><span>Play Binding of issac</span></div>
-      <div class="game-card" onclick="openGame('rylan/fnafworld.html')"><img src="img/fnaf.png"><span>Play FNAF WORLD!</span></div>
-      <div class="game-card" onclick="openGame('rylan/solar.html')"><img src="img/solar.png"><span>Play Solar Smash!</span></div>
-      <div class="game-card" onclick="openGame('proxy/1.html')"><img src="img/proxy.gif"><span>MY PROXY!</span></div>
-      <div class="game-card" onclick="openGame('proxy/2.html')"><img src="img/proxy.gif"><span>MY PROXY 2!</span></div>
-      <div class="game-card" onclick="openGame('rylan/Burrito Bison.html')"><img src="img/proxy.gif"><span>Play Burrito Bison!</span></div>
-      <div class="game-card" onclick="openGame('rylan/Slime Rancher.html')"><img src="img/proxy.gif"><span>Play Slime Ranchers!</span></div>
-      <div class="game-card" onclick="openGame('rylan/That's Not My Neighbor.html')"><img src="img/proxy.gif"><span>Play Thats Not My Neighbor!</span></div>
-      <div class="game-card" onclick="openGame('rylan/Boom Slingers_ Reboom.html')"><img src="img/proxy.gif"><span>Play Boom Slingers!</span></div>
+      <!-- VIP Games -->
+      <div class="game-card" onclick="openGame('secret/secretgame.html', true)"><img src="img/vip1.webp"><span>Secret Game 1</span></div>
+      <div class="game-card" onclick="openGame('hobo.html', true)"><img src="img/na.png"><span>Play Hobo</span></div>
+      <div class="game-card" onclick="openGame('hobo/clhobo2.html', true)"><img src="img/Hobo.png"><span>Play Hobo 2</span></div>
+      <div class="game-card" onclick="openGame('hobo/clhobo3.html', true)"><img src="img/Hobo.png"><span>Play Hobo 3</span></div>
+      <div class="game-card" onclick="openGame('hobo/clhobo4.html', true)"><img src="img/Hobo.png"><span>Play Hobo 4</span></div>
+      <div class="game-card" onclick="openGame('hobo/clhobo5.html', true)"><img src="img/Hobo.png"><span>Play Hobo 5</span></div>
+      <div class="game-card" onclick="openGame('hobo/clhobo6.html', true)"><img src="img/Hobo.png"><span>Play Hobo 6</span></div>
+      <div class="game-card" onclick="openGame('hobo/clhobo7.html', true)"><img src="img/Hobo.png"><span>Play Hobo 7</span></div>
+      <div class="game-card" onclick="openGame('hobo/clhobovszombies.html', true)"><img src="img/Hobo.png"><span>Play Hobo Vs Zombies</span></div>
+      <div class="game-card" onclick="openGame('buck/play.html', true)"><img src="img/buck.png"><span>PLAY BuckShot Roulette!</span></div>
+      <div class="game-card" onclick="openGame('pcports/Kindergarten.html', true)"><img src="img/kindergarden1.png"><span>Play Kindergarden</span></div>
+      <div class="game-card" onclick="openGame('pcports/Kindergarten 2.html', true)"><img src="img/kindergarden2.png"><span>Play Kindergarden 2</span></div>
+      <div class="game-card" onclick="openGame('pcports/Kindergarten 3.html', true)"><img src="img/kindergarden3.png"><span>Play Kindergarden 3</span></div>
+      <div class="game-card" onclick="openGame('Pokemon-unbound/play.html', true)"><img src="img/32.webp"><span>Play Pokemon Unbound!</span></div>
+      <div class="game-card" onclick="openGame('pcports/Hotline Miami.html', true)"><img src="img/hotline.png"><span>Play Hotline Miami</span></div>
+      <div class="game-card" onclick="openGame('pcports/Cuphead.html', true)"><img src="img/cuphead.png"><span>Play Cuphead</span></div>
+      <div class="game-card" onclick="openGame('pcports/R.E.P.O.html', true)"><img src="img/repo.png"><span>Play REPO</span></div>
+      <div class="game-card" onclick="openGame('pcports/RE_RUN.html', true)"><img src="img/rerun.png"><span>Play RE run</span></div>
+      <div class="game-card" onclick="openGame('pcports/ULTRAKILL.html', true)"><img src="img/ultrakill.png"><span>Play Ultrakill</span></div>
+      <div class="game-card" onclick="openGame('pcports/Getting Over It with Bennett Foddy.html', true)"><img src="img/get.png"><span>Play Getting Over It</span></div>
+      <div class="game-card" onclick="openGame('pcports/Jelly Drift.html', true)"><img src="img/jelly.png"><span>Play Jelly Drift</span></div>
+      <div class="game-card" onclick="openGame('pcports/Nazi Zombies_ Portable.html', true)"><img src="img/nazi.png"><span>Play Nazi Zombies</span></div>
+      <div class="game-card" onclick="openGame('any game/read.html', true)"><img src="img/point.png"><span>How to play any PC game without lag!</span></div>
+      <div class="game-card" onclick="openGame('crash/play.html', true)"><img src="img/hollow.png"><span>Hollow Knight!</span></div>
+      <div class="game-card" onclick="openGame('infcraft/play.html', true)"><img src="img/44.webp"><span>Play Infinite Craft!</span></div>
+      <div class="game-card" onclick="openGame('rylan/issac.html', true)"><img src="img/issac.png"><span>Play Binding of Isaac</span></div>
+      <div class="game-card" onclick="openGame('rylan/fnafworld.html', true)"><img src="img/fnaf.png"><span>Play FNAF WORLD!</span></div>
+      <div class="game-card" onclick="openGame('rylan/solar.html', true)"><img src="img/solar.png"><span>Play Solar Smash!</span></div>
+      <div class="game-card" onclick="openGame('proxy/1.html', true)"><img src="img/proxy.gif"><span>MY PROXY!</span></div>
+      <div class="game-card" onclick="openGame('proxy/2.html', true)"><img src="img/proxy.gif"><span>MY PROXY 2!</span></div>
+      <div class="game-card" onclick="openGame('proxy/3.html', true)"><img src="img/proxy.gif"><span>MY PROXY 3!</span></div>
+      <div class="game-card" onclick="openGame('proxy/4.html', true)"><img src="img/proxy.gif"><span>MY PROXY 4!</span></div>
     </div>
   </div>
 
   <footer>
-    &copy; 2025 Shooym Games
+    <p>Made by Shooym</p>
   </footer>
 
   <script>
-    function openGame(url){
-      const win = window.open();
-      if (url) {
-        const iframe = document.createElement("iframe");
-        iframe.style.border = "none";
-        iframe.style.width = "100%";
-        iframe.style.height = "100%";
-        iframe.src = url;
-        win.document.body.style.margin = "0";
-        win.document.body.style.height = "100vh";
-        win.document.body.appendChild(iframe);
-      }
-    }
+    function openGame(url, isVIP = false){
+      const vipToggle = document.getElementById("newWindowToggle");
+      const openInNewWindow = isVIP && vipToggle && vipToggle.checked;
 
-    function unlockVIP(){
-      const input = document.getElementById("vipPassword").value;
-      if(input === "69420"){
-        document.getElementById("vipGames").style.display = "grid";
-        alert("✅ HI rylan or friend of rylan!");
+      if(openInNewWindow){
+        const win = window.open();
+        if (url) {
+          const iframe = document.createElement("iframe");
+          iframe.style.border = "none";
+          iframe.style.width = "100%";
+          iframe.style.height = "100%";
+          iframe.src = url;
+          win.document.body.style.margin = "0";
+          win.document.body.style.height = "100vh";
+          win.document.body.appendChild(iframe);
+        }
       } else {
-        alert("❌ Hey your not rylan or someone rylan told the password!");
+        window.location.href = url;
       }
     }
 
-    // Resume music on first click (fixes autoplay block)
-    // Unmute + play music on first click
-document.addEventListener("click", () => {
-  const bgMusic = document.getElementById("bgMusic");
-  if (bgMusic.muted) {
-    bgMusic.muted = false;
-    bgMusic.play().catch(() => {});
-  }
-}, { once: true }); // runs only once
-
+    function unlockVIP() {
+      const password = document.getElementById("vipPassword").value;
+      const vipGames = document.getElementById("vipGames");
+      if(password === "rylan") { // set your VIP password
+        vipGames.style.display = "grid";
+        alert("VIP unlocked!");
+      } else {
+        alert("Incorrect password!");
+      }
+    }
   </script>
 </body>
 </html>
