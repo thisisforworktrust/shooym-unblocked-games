@@ -6,7 +6,136 @@
   <title>Shooym</title>
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="look.css" />
+  <style>
+    /* -------------------------
+       Base & CSS variables
+       ------------------------- */
+    :root{
+      --bg: #020212;
+      --bg-2: #05021a;
+      --accent-1: #6e00ff;
+      --accent-2: #009dff;
+      --glow-main: rgba(120,80,255,0.12);
+      --grid-primary: rgba(110,80,255,0.06);
+      --grid-secondary: rgba(0,160,255,0.03);
+      --orb-1: radial-gradient(circle,#4b5bff 0%, rgba(75,91,255,0.05) 55%);
+      --orb-2: radial-gradient(circle,#9b6dff 0%, rgba(155,109,255,0.05) 55%);
+      --orb-3: radial-gradient(circle,#2ea6ff 0%, rgba(46,166,255,0.04) 55%);
+      --card-bg: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      --card-border: rgba(120,80,255,0.08);
+      --title-grad: linear-gradient(90deg,var(--accent-1),var(--accent-2),var(--accent-1));
+      --btn-alt-bg: linear-gradient(90deg,#4b5bff55,#7c52ff33);
+      --btn-shadow: 0 6px 18px rgba(40,10,60,0.35);
+      --note: #9aa7ff99;
+      --subtitle: #bfc5ffcc;
+      --footer: #9fa8ff77;
+      --contrast-text: #eef6ff;
+      --text-color: #eef6ff;
+      --transition-fast: 350ms;
+      --transition-slow: 900ms;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; margin:0; font-family:"Poppins",system-ui,Arial; background:var(--bg); color:var(--text-color); overflow-x:hidden; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    a{ color:inherit; }
+
+    /* background canvas layer (grid + particles) */
+    canvas#grid, canvas#particles { position:fixed; inset:0; z-index:0; display:block; pointer-events:none; }
+
+    /* full-screen reactive glow that follows mouse (uses CSS vars set via JS) */
+    body::before{
+      content:""; position:fixed; inset:0; z-index:1; pointer-events:none;
+      background: radial-gradient(circle at var(--x,50%) var(--y,50%), var(--glow-main), transparent 35%);
+      transition:background 80ms linear;
+      mix-blend-mode: screen;
+    }
+
+    /* floating orbs (visual depth) */
+    .orb { position:absolute; border-radius:50%; filter:blur(80px); mix-blend-mode:screen; z-index:1; pointer-events:none; opacity:0.95; transform:translateZ(0); }
+    .orb.orb-1{ width:360px;height:360px; top:4%; left:4%; background:var(--orb-1); animation:orbFloat1 9s ease-in-out infinite; }
+    .orb.orb-2{ width:320px;height:320px; right:6%; top:36%; background:var(--orb-2); animation:orbFloat2 13s ease-in-out infinite; }
+    .orb.orb-3{ width:260px;height:260px; left:42%; bottom:6%; background:var(--orb-3); animation:orbFloat3 11s ease-in-out infinite; }
+    @keyframes orbFloat1{0%{transform:translateY(0)}50%{transform:translateY(-48px)}100%{transform:translateY(0)}}
+    @keyframes orbFloat2{0%{transform:translateY(0)}50%{transform:translateY(-64px)}100%{transform:translateY(0)}}
+    @keyframes orbFloat3{0%{transform:translateY(0)}50%{transform:translateY(-30px)}100%{transform:translateY(0)}}
+
+    /* page container (above bg elements) */
+    .wrap { position:relative; z-index:2; min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:48px 20px 80px; gap:18px; transition:color var(--transition-fast) ease; }
+
+    /* header/topbar for theme controls */
+    .topbar { position:fixed; top:14px; left:50%; transform:translateX(-50%); z-index:6; display:flex; gap:10px; align-items:center; padding:8px; border-radius:12px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); backdrop-filter:blur(6px); box-shadow:var(--btn-shadow); transition:background var(--transition-fast); }
+    .theme-select { padding:8px 10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:rgba(255,255,255,0.02); color:var(--contrast-text); font-weight:700; outline:none; cursor:pointer; }
+
+    /* main title */
+    h1{ margin:0; font-size:3.2rem; font-weight:700; letter-spacing:1px; background:var(--title-grad); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-size:200% 100%; animation:gradMove 6s linear infinite; text-align:center; text-shadow:0 6px 30px rgba(30,10,60,0.45); transition:filter var(--transition-fast), transform var(--transition-fast); }
+    @keyframes gradMove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+    .subtitle{ margin:6px 0 0; color:var(--subtitle); text-align:center; max-width:1100px; z-index:2; transition:color var(--transition-fast); }
+    .note { color:var(--note); text-align:center; margin:0; transition:color var(--transition-fast); }
+
+    /* controls (music + global settings) */
+    .controls { margin-top:12px; display:flex; gap:12px; align-items:center; z-index:2; flex-wrap:wrap; justify-content:center; }
+    .btn { border:0; padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:700; background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); color:var(--contrast-text); backdrop-filter:blur(6px); box-shadow:var(--btn-shadow); transition:transform .16s ease, box-shadow .16s ease, filter var(--transition-fast); }
+    .btn:active{ transform:translateY(1px) }
+    .btn.alt{ background:var(--btn-alt-bg); color:#fff; }
+
+    /* layout - game grid */
+    .game-buttons { width:100%; max-width:1400px; display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); margin-top:34px; z-index:2; padding:8px; }
+
+    /* card base */
+    .game-card {
+      position:relative; overflow:hidden; cursor:pointer; border-radius:16px;
+      padding:18px; text-align:center; min-height:150px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      background:var(--card-bg); box-shadow: 0 8px 30px rgba(20,10,60,0.35), inset 0 1px 0 rgba(255,255,255,0.02);
+      transition: transform 420ms cubic-bezier(.2,.9,.2,1), box-shadow 420ms ease, border-color 420ms ease, background 420ms ease;
+      border:1px solid var(--card-border);
+      transform:translateY(6px); opacity:0;
+      will-change:transform,opacity;
+    }
+    .game-card .thumb{ width:100px;height:100px;border-radius:12px;margin-bottom:12px; object-fit:cover; transition:transform 320ms ease; }
+    .game-card span{ display:block; font-weight:700; color:var(--contrast-text); font-size:0.98rem; text-shadow:0 3px 18px rgba(20,10,60,0.5); transition:color var(--transition-fast); }
+    .game-card:hover{ transform:translateY(-6px) scale(1.04); box-shadow:0 18px 60px rgba(70,40,200,0.22); border-color:rgba(120,80,255,0.26); }
+    .game-card:hover .thumb{ transform:scale(1.12); }
+
+    /* sweep effect (keeps from original) */
+    .game-card::after{ content:""; position:absolute; inset:-40% -20% auto -20%; height:120%; transform:skewX(-22deg) translateX(-120%); background:linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent); transition:transform .7s ease; pointer-events:none; }
+    .game-card:hover::after{ transform:skewX(-22deg) translateX(20%); }
+
+    /* vip panel (kept same look) */
+    .vip-panel { width:100%; max-width:1200px; margin:32px auto 18px; z-index:2; padding:20px; border-radius:14px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(120,80,255,0.06); box-shadow:0 16px 40px rgba(10,6,30,0.45); display:flex; flex-direction:column; gap:12px; align-items:center; }
+
+    .vip-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:center; width:100% }
+    .vip-input{ padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.02); color:var(--contrast-text); outline:none; min-width:220px }
+    .toggle-label{ display:inline-flex; align-items:center; gap:8px; font-weight:700; color:#cfe3ffcc; cursor: pointer }
+    .small-note{ font-size:0.86rem; color:#aab6ff99 }
+
+    .vip-games{ display:none; width:100%; margin-top:14px; gap:18px; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); }
+
+    footer{ text-align:center; color:var(--footer); margin-top:40px; z-index:2; font-size:0.92rem; transition:color var(--transition-fast); }
+
+    /* card entrance animations variants (per-theme JS toggles a body class) */
+    @keyframes cardInUp { from{opacity:0; transform:translateY(30px)} to{opacity:1; transform:translateY(0)} }
+    @keyframes cardInLeft { from{opacity:0; transform:translateX(-40px) scale(.98)} to{opacity:1; transform:translateX(0) scale(1)} }
+    @keyframes cardInRight { from{opacity:0; transform:translateX(40px) scale(.98)} to{opacity:1; transform:translateX(0) scale(1)} }
+    @keyframes cardInPop { from{opacity:0; transform:scale(.85)} 60%{ transform:scale(1.05)} to{opacity:1; transform:scale(1)} }
+    @keyframes cardInRotate { from{opacity:0; transform:translateY(20px) rotateX(15deg)} to{opacity:1; transform:translateY(0) rotateX(0)} }
+    @keyframes cardInFade { from{opacity:0} to{opacity:1} }
+
+    /* per-theme body classes will be toggled by JS; these set which animation style is used */
+    body.theme-electric .game-card { animation-name: cardInUp; animation-duration:520ms; animation-fill-mode:forwards; }
+    body.theme-inferno .game-card { animation-name: cardInLeft; animation-duration:620ms; animation-fill-mode:forwards; }
+    body.theme-cosmic .game-card { animation-name: cardInRight; animation-duration:720ms; animation-fill-mode:forwards; }
+    body.theme-void .game-card { animation-name: cardInPop; animation-duration:520ms; animation-fill-mode:forwards; }
+    body.theme-grove .game-card { animation-name: cardInRotate; animation-duration:640ms; animation-fill-mode:forwards; }
+    body.theme-frost .game-card { animation-name: cardInFade; animation-duration:520ms; animation-fill-mode:forwards; }
+    body.theme-chrono .game-card { animation-name: cardInUp; animation-duration:880ms; animation-fill-mode:forwards; }
+
+    /* subtle focus accessibility */
+    .game-card:focus{ outline:2px solid rgba(255,255,255,0.06); transform:translateY(-6px); }
+
+    /* responsive */
+    @media (max-width:720px){ h1{font-size:2rem} .game-card{min-height:140px} .thumb{width:86px;height:86px} .topbar{left:12px; transform:none} }
+
+  </style>
 </head>
 <body>
   <!-- background canvases: grid + particles (both behind UI) -->
@@ -152,6 +281,466 @@
 
   <audio id="bgMusic" src="music" loop preload="auto"></audio>
 
-  <script src="code.js"></script>
+  <script>
+    /***********************************************************
+     * THEME + UI SYSTEM
+     ***********************************************************/
+    const THEMES = [
+      {
+        id: 'electric', name: 'Electric Pulse',
+        vars:{
+          '--bg':'#0A0F25','--bg-2':'#05061a','--accent-1':'#00ffff','--accent-2':'#0080ff','--glow-main':'rgba(0,220,255,0.12)',
+          '--grid-primary':'rgba(0,140,255,0.06)','--grid-secondary':'rgba(0,200,255,0.03)',
+          '--orb-1':'radial-gradient(circle,#00ffff 0%, rgba(0,255,255,0.05) 55%)','--orb-2':'radial-gradient(circle,#0080ff 0%, rgba(0,128,255,0.05) 55%)','--orb-3':'radial-gradient(circle,#66f2ff 0%, rgba(0,200,255,0.04) 55%)',
+          '--card-bg':'linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01))','--card-border':'rgba(0,160,255,0.12)','--title-grad':'linear-gradient(90deg,#00ffff,#0080ff,#00ffff)','--btn-alt-bg':'linear-gradient(90deg,#00dfff55,#0080ff33)',
+          '--btn-shadow':'0 8px 26px rgba(0,120,180,0.18)','--note':'#9feeffbb','--subtitle':'#bffaffcc','--footer':'#9fefff77','--contrast-text':'#eaffff','--text-color':'#eaffff'
+        }, bodyClass:'theme-electric'
+      },
+      {
+        id:'inferno', name:'Inferno Rush',
+        vars:{
+          '--bg':'#1A0502','--bg-2':'#160304','--accent-1':'#ff3c00','--accent-2':'#ffb347','--glow-main':'rgba(255,84,24,0.12)',
+          '--grid-primary':'rgba(255,84,24,0.06)','--grid-secondary':'rgba(255,140,60,0.03)',
+          '--orb-1':'radial-gradient(circle,#ff3c00 0%, rgba(255,60,0,0.06) 55%)','--orb-2':'radial-gradient(circle,#ff8a00 0%, rgba(255,138,0,0.05) 55%)','--orb-3':'radial-gradient(circle,#ffcf66 0%, rgba(255,207,102,0.04) 55%)',
+          '--card-bg':'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0))','--card-border':'rgba(255,110,50,0.12)','--title-grad':'linear-gradient(90deg,#ff3c00,#ffb347,#ff3c00)','--btn-alt-bg':'linear-gradient(90deg,#ff6a2555,#ff9a6633)',
+          '--btn-shadow':'0 8px 30px rgba(180,40,20,0.16)','--note':'#ffbfa088','--subtitle':'#ffd7cacc','--footer':'#ffb07a77','--contrast-text':'#fff1ea','--text-color':'#fff1ea'
+        }, bodyClass:'theme-inferno'
+      },
+      {
+        id:'cosmic', name:'Cosmic Drift',
+        vars:{
+          '--bg':'#07021a','--bg-2':'#030015','--accent-1':'#a020f0','--accent-2':'#ff00ff','--glow-main':'rgba(160,30,220,0.10)',
+          '--grid-primary':'rgba(160,30,220,0.06)','--grid-secondary':'rgba(30,0,160,0.03)',
+          '--orb-1':'radial-gradient(circle,#a020f0 0%, rgba(160,30,220,0.05) 55%)','--orb-2':'radial-gradient(circle,#ff00ff 0%, rgba(255,0,255,0.05) 55%)','--orb-3':'radial-gradient(circle,#7a4bff 0%, rgba(120,80,255,0.04) 55%)',
+          '--card-bg':'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0))','--card-border':'rgba(140,50,200,0.10)','--title-grad':'linear-gradient(90deg,#a020f0,#ff00ff,#a020f0)','--btn-alt-bg':'linear-gradient(90deg,#8b3cff55,#b22aff33)',
+          '--btn-shadow':'0 8px 28px rgba(100,30,140,0.16)','--note':'#caaaff88','--subtitle':'#e0bfffcc','--footer':'#d9aaff77','--contrast-text':'#f6eaff','--text-color':'#f6eaff'
+        }, bodyClass:'theme-cosmic'
+      },
+      {
+        id:'void', name:'Void Breaker',
+        vars:{
+          '--bg':'#000000','--bg-2':'#070007','--accent-1':'#b00020','--accent-2':'#ff5555','--glow-main':'rgba(176,0,32,0.12)',
+          '--grid-primary':'rgba(200,20,40,0.06)','--grid-secondary':'rgba(255,80,80,0.03)',
+          '--orb-1':'radial-gradient(circle,#b00020 0%, rgba(176,0,32,0.06) 55%)','--orb-2':'radial-gradient(circle,#ff4040 0%, rgba(255,64,64,0.05) 55%)','--orb-3':'radial-gradient(circle,#661111 0%, rgba(102,17,17,0.04) 55%)',
+          '--card-bg':'linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.0))','--card-border':'rgba(200,40,50,0.08)','--title-grad':'linear-gradient(90deg,#b00020,#ff5555,#b00020)','--btn-alt-bg':'linear-gradient(90deg,#b0002055,#8b000033)',
+          '--btn-shadow':'0 8px 28px rgba(120,10,30,0.18)','--note':'#ffb0b088','--subtitle':'#ffc8c8cc','--footer':'#ff9a9a77','--contrast-text':'#ffecec','--text-color':'#ffecec'
+        }, bodyClass:'theme-void'
+      },
+      {
+        id:'grove', name:'Neon Grove',
+        vars:{
+          '--bg':'#001a12','--bg-2':'#00120f','--accent-1':'#00ff99','--accent-2':'#00cc88','--glow-main':'rgba(0,255,153,0.12)',
+          '--grid-primary':'rgba(0,200,120,0.06)','--grid-secondary':'rgba(0,255,170,0.03)',
+          '--orb-1':'radial-gradient(circle,#00ff99 0%, rgba(0,255,153,0.05) 55%)','--orb-2':'radial-gradient(circle,#00cc88 0%, rgba(0,204,136,0.05) 55%)','--orb-3':'radial-gradient(circle,#22ffbb 0%, rgba(34,255,187,0.04) 55%)',
+          '--card-bg':'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.0))','--card-border':'rgba(0,200,120,0.08)','--title-grad':'linear-gradient(90deg,#00ff99,#00cc88,#00ff99)','--btn-alt-bg':'linear-gradient(90deg,#00ff9955,#00cc8833)',
+          '--btn-shadow':'0 8px 28px rgba(0,120,80,0.14)','--note':'#bfffeebb','--subtitle':'#bfffe0cc','--footer':'#9fffdc77','--contrast-text':'#e8fff6','--text-color':'#e8fff6'
+        }, bodyClass:'theme-grove'
+      },
+      {
+        id:'frost', name:'Frost Circuit',
+        vars:{
+          '--bg':'#e6f1ff','--bg-2':'#dbeafc','--accent-1':'#0099ff','--accent-2':'#66bfff','--glow-main':'rgba(0,153,255,0.08)',
+          '--grid-primary':'rgba(0,140,220,0.06)','--grid-secondary':'rgba(0,170,240,0.03)',
+          '--orb-1':'radial-gradient(circle,#bfe8ff 0%, rgba(160,220,255,0.06) 55%)','--orb-2':'radial-gradient(circle,#9fd7ff 0%, rgba(130,200,255,0.05) 55%)','--orb-3':'radial-gradient(circle,#cfefff 0%, rgba(200,240,255,0.04) 55%)',
+          '--card-bg':'linear-gradient(180deg, rgba(10,20,30,0.02), rgba(255,255,255,0.04))','--card-border':'rgba(160,210,255,0.12)','--title-grad':'linear-gradient(90deg,#e6f1ff,#9fd7ff,#e6f1ff)','--btn-alt-bg':'linear-gradient(90deg,#9fd7ff55,#66bfff33)',
+          '--btn-shadow':'0 8px 30px rgba(70,120,170,0.08)','--note':'#507fa088','--subtitle':'#4a6f8fcc','--footer':'#6b93b077','--contrast-text':'#062033','--text-color':'#062033'
+        }, bodyClass:'theme-frost'
+      },
+      {
+        id:'chrono', name:'Chrono Core',
+        vars:{
+          '--bg':'#1a1a1a','--bg-2':'#0f0f0f','--accent-1':'#ffd700','--accent-2':'#c0c0c0','--glow-main':'rgba(255,215,0,0.10)',
+          '--grid-primary':'rgba(200,160,30,0.06)','--grid-secondary':'rgba(200,200,200,0.03)',
+          '--orb-1':'radial-gradient(circle,#ffd700 0%, rgba(255,215,0,0.05) 55%)','--orb-2':'radial-gradient(circle,#c0c0c0 0%, rgba(200,200,200,0.05) 55%)','--orb-3':'radial-gradient(circle,#ffdf80 0%, rgba(255,223,128,0.04) 55%)',
+          '--card-bg':'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))','--card-border':'rgba(200,160,30,0.08)','--title-grad':'linear-gradient(90deg,#ffd700,#c0c0c0,#ffd700)','--btn-alt-bg':'linear-gradient(90deg,#ffd70033,#c0c0c033)',
+          '--btn-shadow':'0 8px 28px rgba(120,100,30,0.12)','--note':'#e9d5a477','--subtitle':'#f6e6cacc','--footer':'#d6c28577','--contrast-text':'#fff9ec','--text-color':'#fff9ec'
+        }, bodyClass:'theme-chrono'
+      }
+    ];
+
+    // helper elements
+    const themePicker = document.getElementById('themePicker');
+    const themeLabel = document.getElementById('themeLabel');
+    const autoToggle = document.getElementById('autoToggle');
+
+    // build select & id map
+    const idToIndex = {};
+    THEMES.forEach((t,i)=>{ idToIndex[t.id]=i; const opt=document.createElement('option'); opt.value=t.id; opt.textContent=t.name; themePicker.appendChild(opt); });
+
+    // persistent state
+    let themeIndex = 0;
+    const STORAGE_KEY = 'shooym_theme';
+    const STORAGE_AUTO = 'shooym_theme_auto';
+
+    function applyTheme(index, options={animate:true, save:true}){
+      index = ((index%THEMES.length)+THEMES.length)%THEMES.length;
+      themeIndex = index;
+      const theme = THEMES[themeIndex];
+
+      // set css variables
+      for(const k in theme.vars) document.documentElement.style.setProperty(k, theme.vars[k]);
+
+      // update body class (per-theme)
+      document.body.classList.remove(...THEMES.map(t=>t.bodyClass));
+      if(theme.bodyClass) document.body.classList.add(theme.bodyClass);
+
+      // update visible theme UI
+      themePicker.value = theme.id;
+      themeLabel.textContent = theme.name;
+
+      // set main background quickly via CSS var to ensure canvas uses same color
+      document.body.style.background = `var(--bg)`;
+
+      // adjust text color variable separately (some themes use dark text)
+      document.documentElement.style.setProperty('--text-color', theme.vars['--text-color'] || theme.vars['--contrast-text'] || '#fff');
+
+      // animate subtle cross-fade
+      if(options.animate){
+        document.documentElement.style.transition = `background ${getComputedStyle(document.documentElement).getPropertyValue('--transition-fast') || '350ms'} ease, color ${getComputedStyle(document.documentElement).getPropertyValue('--transition-fast') || '350ms'} ease`;
+      } else {
+        document.documentElement.style.transition = 'none';
+      }
+
+      // save if requested
+      if(options.save) localStorage.setItem(STORAGE_KEY, theme.id);
+
+      // re-animate cards with theme-specific stagger & entrance
+      staggerAnimateCards();
+    }
+
+    // cycle helpers
+    function cycleTheme(dir=1){
+      applyTheme((themeIndex + dir + THEMES.length) % THEMES.length);
+    }
+
+    // initialize from storage or by hour mapping
+    function initTheme(){
+      const forcedTheme = localStorage.getItem(STORAGE_KEY);
+      const auto = localStorage.getItem(STORAGE_AUTO);
+      if(auto === 'false') autoToggle.checked = false;
+      if(forcedTheme){
+        const idx = idToIndex[forcedTheme];
+        if(typeof idx === 'number') { applyTheme(idx, {animate:false, save:false}); return; }
+      }
+      // otherwise initialize by current hour slot
+      applyTheme(hourIndexFromNow(), {animate:false, save:false});
+    }
+
+    // map current hour to theme index (hour modulo themes length)
+    function hourIndexFromNow(){
+      const h = new Date().getHours();
+      // spread themes across 24 hours: choose start offset 0 (=theme 0 at midnight)
+      return h % THEMES.length;
+    }
+
+    // auto-hourly rotation: checks every minute if hour changed (lightweight)
+    let lastHour = new Date().getHours();
+    setInterval(()=> {
+      if(!autoToggle.checked) return;
+      const nowH = new Date().getHours();
+      if(nowH !== lastHour){
+        lastHour = nowH;
+        // pick next theme relative to current hour mapping for smoother day progression
+        applyTheme((hourIndexFromNow()), {animate:true, save:false});
+      }
+      // persist auto preference
+      localStorage.setItem(STORAGE_AUTO, autoToggle.checked ? 'true' : 'false');
+    }, 60_000);
+
+    // shift+C / shift+X bindings to cycle themes
+    document.addEventListener('keydown', (e)=>{
+      if(e.key.toLowerCase() === 'c' && e.shiftKey){ e.preventDefault(); cycleTheme(1); localStorage.setItem(STORAGE_AUTO,'false'); autoToggle.checked=false; localStorage.setItem(STORAGE_KEY, THEMES[themeIndex].id); }
+      if(e.key.toLowerCase() === 'x' && e.shiftKey){ e.preventDefault(); cycleTheme(-1); localStorage.setItem(STORAGE_AUTO,'false'); autoToggle.checked=false; localStorage.setItem(STORAGE_KEY, THEMES[themeIndex].id); }
+    });
+
+    // manual select
+    themePicker.addEventListener('change', e => { const id = e.target.value; applyTheme(idToIndex[id]); localStorage.setItem(STORAGE_AUTO,'false'); autoToggle.checked=false; });
+
+    // auto toggle
+    autoToggle.addEventListener('change', ()=> { localStorage.setItem(STORAGE_AUTO, autoToggle.checked ? 'true' : 'false'); if(autoToggle.checked) { applyTheme(hourIndexFromNow()); } });
+
+    /***********************************************************
+     * ORBS + CANVAS: Grid + Particles (background layer only)
+     ***********************************************************/
+    const gridCanvas = document.getElementById('grid');
+    const gridCtx = gridCanvas.getContext('2d');
+    const particlesCanvas = document.getElementById('particles');
+    const pCtx = particlesCanvas.getContext('2d');
+
+    function resizeCanvases(){
+      gridCanvas.width = particlesCanvas.width = innerWidth * devicePixelRatio;
+      gridCanvas.height = particlesCanvas.height = innerHeight * devicePixelRatio;
+      gridCanvas.style.width = particlesCanvas.style.width = innerWidth + 'px';
+      gridCanvas.style.height = particlesCanvas.style.height = innerHeight + 'px';
+      gridCtx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+      pCtx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
+    }
+    addEventListener('resize', resizeCanvases);
+    resizeCanvases();
+
+    // grid animation (wave grid from your original but reads CSS vars)
+    let t = 0;
+    function drawGrid(){
+      gridCtx.clearRect(0,0,innerWidth,innerHeight);
+      const cs = getComputedStyle(document.documentElement);
+      const gp = cs.getPropertyValue('--grid-primary') || 'rgba(110,80,255,0.06)';
+      const gs = cs.getPropertyValue('--grid-secondary') || 'rgba(0,160,255,0.03)';
+      const cols=40, rows=40;
+      gridCtx.lineWidth = 1;
+      for(let i=0;i<cols;i++){
+        gridCtx.beginPath();
+        const x = i/(cols-1)*innerWidth;
+        for(let j=0;j<rows;j++){
+          const y = j/(rows-1)*innerHeight + Math.sin(t + i*0.22 + j*0.44)*18;
+          if(j===0) gridCtx.moveTo(x,y); else gridCtx.lineTo(x,y);
+        }
+        gridCtx.strokeStyle = gp.trim();
+        gridCtx.stroke();
+      }
+      for(let j=0;j<rows;j++){
+        gridCtx.beginPath();
+        const y = j/(rows-1)*innerHeight;
+        for(let i=0;i<cols;i++){
+          const x = i/(cols-1)*innerWidth + Math.cos(t + i*0.42 + j*0.28)*18;
+          if(i===0) gridCtx.moveTo(x,y); else gridCtx.lineTo(x,y);
+        }
+        gridCtx.strokeStyle = gs.trim();
+        gridCtx.stroke();
+      }
+      t += 0.018;
+    }
+
+    // particle system (lots of moving small orbs that drift and react to mouse)
+    const particles = [];
+    const PARTICLE_COUNT = Math.min(120, Math.floor((innerWidth*innerHeight)/60000)); // scaled to screen size
+    function createParticles(){
+      particles.length = 0;
+      for(let i=0;i<Math.max(60, PARTICLE_COUNT); i++){
+        particles.push({
+          x: Math.random()*innerWidth,
+          y: Math.random()*innerHeight,
+          vx: (Math.random()-0.5)*0.2,
+          vy: (Math.random()-0.5)*0.2,
+          r: 1 + Math.random()*3,
+          life: 20 + Math.random()*80,
+          hue: Math.random()*360,
+          alpha: 0.06 + Math.random()*0.14
+        });
+      }
+    }
+    createParticles();
+    addEventListener('resize', createParticles);
+
+    // mouse reactive position (with smoothing)
+    const mouse = { x: innerWidth/2, y: innerHeight/2, tx: innerWidth/2, ty: innerHeight/2 };
+    document.addEventListener('mousemove', e => { mouse.tx = e.clientX; mouse.ty = e.clientY; document.body.style.setProperty('--x', e.clientX + 'px'); document.body.style.setProperty('--y', e.clientY + 'px'); });
+
+    // small easing loop to smooth pointer follow
+    function easeMouse(){
+      mouse.x += (mouse.tx - mouse.x) * 0.14;
+      mouse.y += (mouse.ty - mouse.y) * 0.14;
+    }
+
+    function drawParticles(){
+      pCtx.clearRect(0,0,innerWidth,innerHeight);
+      // draw particles as soft blurred circles (use composite for nicer glow)
+      pCtx.globalCompositeOperation = 'lighter';
+      particles.forEach(p=>{
+        // reactive acceleration toward mouse (subtle)
+        const dx = (mouse.x - p.x), dy = (mouse.y - p.y);
+        const dist = Math.sqrt(dx*dx + dy*dy) || 1;
+        const force = Math.max(0, 100 - dist) * 0.00012;
+        p.vx += dx/dist * force;
+        p.vy += dy/dist * force;
+        p.x += p.vx;
+        p.y += p.vy;
+        // wrap edges
+        if(p.x < -20) p.x = innerWidth + 20;
+        if(p.x > innerWidth + 20) p.x = -20;
+        if(p.y < -20) p.y = innerHeight + 20;
+        if(p.y > innerHeight + 20) p.y = -20;
+        // draw
+        const cs = getComputedStyle(document.documentElement);
+        const accent1 = cs.getPropertyValue('--accent-1') || '#00ffff';
+        pCtx.beginPath();
+        const g = pCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r*8);
+        g.addColorStop(0, hexToRgba(accent1.trim(), Math.min(0.28, p.alpha + 0.05)));
+        g.addColorStop(0.3, hexToRgba(accent1.trim(), p.alpha * 0.6));
+        g.addColorStop(1, hexToRgba(accent1.trim(), 0));
+        pCtx.fillStyle = g;
+        pCtx.fillRect(p.x - p.r*8, p.y - p.r*8, p.r*16, p.r*16);
+      });
+      pCtx.globalCompositeOperation = 'source-over';
+    }
+
+    // small helper: convert hex color or rgb string to rgba with alpha (basic)
+    function hexToRgba(col, a){
+      // already rgba/rgb
+      if(col.startsWith('rgba') || col.startsWith('rgb')) {
+        return col.replace('rgb', 'rgba').replace(')', `, ${a})`);
+      }
+      // hex #rrggbb or #rgb
+      let hex = col.replace('#','');
+      if(hex.length===3) hex = hex.split('').map(c=>c+c).join('');
+      const r = parseInt(hex.substring(0,2),16), g = parseInt(hex.substring(2,4),16), b = parseInt(hex.substring(4,6),16);
+      return `rgba(${r},${g},${b},${a})`;
+    }
+
+    // main background animation loop
+    function bgLoop(){
+      easeMouse();
+      drawGrid();
+      drawParticles();
+      requestAnimationFrame(bgLoop);
+    }
+    bgLoop();
+
+    /***********************************************************
+     * CARD ANIMATIONS + ACCESSIBILITY
+     ***********************************************************/
+    // animate cards stagger depending on theme; uses per-card delays (different patterns per theme)
+    function staggerAnimateCards(){
+      const grid = document.getElementById('publicGames');
+      if(!grid) return;
+      const cards = Array.from(grid.querySelectorAll('.game-card'));
+      const tname = THEMES[themeIndex].id;
+      // clear existing inline animation styles so reflow happens
+      cards.forEach(c => { c.style.animation = 'none'; c.style.opacity = 0; });
+      // patterns: choose ordering for each theme
+      let order = cards.map((_,i)=>i);
+      if(tname === 'electric'){ /* left-to-right */ order = order; }
+      else if(tname === 'inferno'){ /* right-to-left */ order = order.slice().reverse(); }
+      else if(tname === 'cosmic'){ /* center-out */ order = centerOut(order); }
+      else if(tname === 'void'){ /* random */ order = shuffle(order.slice()); }
+      else if(tname === 'grove'){ /* row-based serpentine */ order = serpent(order, grid); }
+      else if(tname === 'frost'){ /* small pop (fast) left-to-right */ order = order; }
+      else if(tname === 'chrono'){ /* slow and dramatic top-down */ order = order; }
+
+      // apply staggered animation
+      order.forEach((idx, i) => {
+        const c = cards[idx];
+        const baseDelay = i * 45;
+        // theme-specific speed multiplier
+        let dur = 520;
+        if(tname === 'inferno') dur = 620;
+        if(tname === 'cosmic') dur = 720;
+        if(tname === 'chrono') dur = 880;
+        if(tname === 'frost') dur = 420;
+        c.style.animation = `none`;
+        // force reflow to restart animation
+        void c.offsetWidth;
+        c.style.animation = `${getComputedStyle(document.body).getPropertyValue('--card-animation-name') || c.style.animationName || ''} ${dur}ms cubic-bezier(.15,.9,.35,1) ${baseDelay}ms forwards`;
+        // fallback: also set a per-card transition to fade in if animation doesn't run
+        setTimeout(()=>{ c.style.opacity = 1; }, baseDelay + Math.min(dur, 900));
+      });
+    }
+
+    // helper ordering functions
+    function centerOut(arr){
+      const out = [], mid = Math.floor(arr.length/2);
+      for(let i=0;i<mid;i++){ out.push(mid + i); out.push(mid - i - 1); }
+      if(arr.length%2) out.push(arr[0]);
+      return out.filter(x => x !== undefined && x !== null);
+    }
+    function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a; }
+    function serpent(order, grid){
+      // attempt to order by computed row index (approx) to do snake pattern
+      const cols = Math.max(1, Math.floor(grid.offsetWidth / 220));
+      const out = [];
+      for(let r=0;r<1000;r++){
+        for(let c=0;c<cols;c++){
+          const idx = r*cols + (r%2 ? (cols-1-c) : c);
+          if(idx >= order.length) break;
+          out.push(idx);
+        }
+        if(out.length >= order.length) break;
+      }
+      return out.slice(0, order.length);
+    }
+
+    // when page loads, animate public cards initially
+    window.addEventListener('load', () => {
+      animateCardsOnce();
+      // initialize theme system after DOM ready
+      initTheme();
+      // try autoplay music muted
+      document.getElementById('bgMusic').play().catch(()=>{});
+    });
+
+    function animateCardsOnce(){
+      const publicGrid = document.getElementById('publicGames');
+      const cards = publicGrid.querySelectorAll('.game-card');
+      cards.forEach((c,i) => { c.style.animation = `cardInUp .6s cubic-bezier(.15,.9,.35,1) ${(i*45)}ms forwards`; });
+    }
+
+    // re-run stagger whenever theme changes via applyTheme; we also call it once here
+    // (applyTheme calls staggerAnimateCards internally)
+
+    /***********************************************************
+     * MUSIC + OPEN GAME + VIP logic (kept from original)
+     ***********************************************************/
+    const music = document.getElementById('bgMusic');
+    const musicBtn = document.getElementById('musicToggle');
+    music.volume = 0.28; music.muted = true; musicBtn.textContent = 'Music (muted)';
+    musicBtn.addEventListener('click', () => {
+      if(music.muted){ music.muted = false; music.play().catch(()=>{}); musicBtn.textContent = 'Music (on)'; musicBtn.classList.add('alt'); }
+      else { music.muted = true; musicBtn.textContent = 'Music (muted)'; musicBtn.classList.remove('alt'); }
+    });
+
+    let globalUnlock = false;
+    function openGame(url){
+      const globalToggle = document.getElementById('globalNewWindowToggle');
+      const openInNewWindow = globalUnlock && globalToggle && globalToggle.checked;
+      const vipOpen = document.getElementById('vipOpenNewWindow')?.checked;
+      const isVip = url.toLowerCase().includes('pcports') || url.toLowerCase().includes('rylan') || url.toLowerCase().includes('vip') || url.toLowerCase().includes('hobo') || url.toLowerCase().includes('proxy') || url.toLowerCase().includes('secret');
+      if(isVip && vipOpen){
+        const win = window.open(); const iframe = document.createElement('iframe');
+        iframe.style.border='none'; iframe.style.width='100%'; iframe.style.height='100vh'; iframe.src = url;
+        win.document.body.style.margin = '0'; win.document.body.appendChild(iframe); return;
+      }
+      if(openInNewWindow){
+        const win = window.open(); const iframe = document.createElement('iframe');
+        iframe.style.border='none'; iframe.style.width='100%'; iframe.style.height='100vh'; iframe.src = url;
+        win.document.body.style.margin = '0'; win.document.body.appendChild(iframe);
+      } else {
+        window.location.href = url;
+      }
+    }
+
+    function unlockGlobal(){
+      const p = document.getElementById('globalPassword').value;
+      const toggle = document.getElementById('globalNewWindowToggle');
+      if(p === '69420'){ globalUnlock = true; toggle.disabled = false; toggle.setAttribute('aria-disabled','false'); alert('Global new window toggle unlocked!'); }
+      else alert('Incorrect global password!');
+    }
+
+    function unlockVIP(){
+      const p = document.getElementById('vipPassword').value;
+      const vipGames = document.getElementById('vipGames');
+      if(p === '69420'){ vipGames.style.display = 'grid'; vipGames.setAttribute('aria-hidden','false'); staggerAnimateCards(); alert('VIP games unlocked!'); }
+      else alert('Incorrect VIP password!');
+    }
+
+    // focusability for keyboard users
+    document.addEventListener('keydown', e => { if(e.key === 'Enter'){ const focused = document.activeElement; if(focused && focused.classList.contains('game-card')) focused.click(); } });
+    document.querySelectorAll('.game-card').forEach(c => { c.setAttribute('tabindex','0'); c.setAttribute('role','button'); c.setAttribute('aria-pressed','false'); c.addEventListener('keydown', ev => { if(ev.key === 'Enter' || ev.key === ' ') ev.currentTarget.click(); }); });
+
+    /***********************************************************
+     * UTIL: read stored theme preference and start engine
+     ***********************************************************/
+    // load theme preference and auto preference
+    (function boot(){
+      const savedTheme = localStorage.getItem(STORAGE_KEY);
+      const savedAuto = localStorage.getItem(STORAGE_AUTO);
+      if(savedAuto === 'false') autoToggle.checked = false;
+      if(savedTheme && idToIndex[savedTheme] !== undefined){
+        applyTheme(idToIndex[savedTheme], {animate:true, save:false});
+      } else {
+        // apply by hour initially
+        applyTheme(hourIndexFromNow(), {animate:true, save:false});
+      }
+    })();
+
+  </script>
 </body>
 </html>
