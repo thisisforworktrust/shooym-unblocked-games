@@ -1,0 +1,29 @@
+/* -------------------------
+   Base & CSS variables
+   ------------------------- */
+:root{
+  --bg: #020212;
+  --bg-2: #05021a;
+  --accent-1: #6e00ff;
+  --accent-2: #009dff;
+  --glow-main: rgba(120,80,255,0.12);
+  --grid-primary: rgba(110,80,255,0.06);
+  --grid-secondary: rgba(0,160,255,0.03);
+  --orb-1: radial-gradient(circle,#4b5bff 0%, rgba(75,91,255,0.05) 55%);
+  --orb-2: radial-gradient(circle,#9b6dff 0%, rgba(155,109,255,0.05) 55%);
+  --orb-3: radial-gradient(circle,#2ea6ff 0%, rgba(46,166,255,0.04) 55%);
+  --card-bg: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  --card-border: rgba(120,80,255,0.08);
+  --title-grad: linear-gradient(90deg,var(--accent-1),var(--accent-2),var(--accent-1));
+  --btn-alt-bg: linear-gradient(90deg,#4b5bff55,#7c52ff33);
+  --btn-shadow: 0 6px 18px rgba(40,10,60,0.35);
+  --note: #9aa7ff99;
+  --subtitle: #bfc5ffcc;
+  --footer: #9fa8ff77;
+  --contrast-text: #eef6ff;
+  --text-color: #eef6ff;
+  --transition-fast: 350ms;
+  --transition-slow: 900ms;
+}
+
+/* rest of all CSS from original <style> ... (keep everything exactly as in your code) */
